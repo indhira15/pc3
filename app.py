@@ -16,20 +16,7 @@ i_i = True
 @app.route('/')
 def index():
     cur = mysql.connection.cursor()
-    if i_i:
-        cur.execute('drop database usersdb;')
-        cur.execute('create database usersdb;')
-        cur.execute('use usersdb;')
-        cur.execute("CREATE TABLE usersdb( username VARCHAR(20),nombre VARCHAR(20),apellidos VARCHAR(20),clave VARCHAR(20));")
-        cur.execute("INSERT INTO usersdb VALUES ('user000','luci','PORTATILES','VIVOBOOK');")
-        cur.execute("INSERT INTO usersdb VALUES ('dany', 'daniel','PORTATILES','ZENBOOK 14');")
-        cur.execute("INSERT INTO usersdb VALUES ('indd', 'shd','PORTATILES','ZENBOOK 14');")
-        cur.execute("INSERT INTO usersdb VALUES ('when', 'charlie','PORTATILES','ZENBOOK 14');")
-        cur.execute('select * from usersdb')
-        i_i = False
-    data = cur.fetchall()
-    return render_template('index.html',)
-    # return 'Hola mundo'
+    return render_template('index.html')
 
 
 @app.route('/add_user', methods = ['POST'])
@@ -59,6 +46,7 @@ def entrar():
 
     cur.execute('select * from usersdb where username = %s and clave = %s', (des, pre3))
     data = cur.fetchall()
+    mysql.connection.commit()
     print(data)
     if data:
         flash('Se logeo correctamente')
@@ -67,10 +55,6 @@ def entrar():
     else:
         flash('datos mal colocados')
         return redirect(url_for('no_sucess'))
-
-
-    mysql.connection.commit()
-
 
 
 @app.route('/sucess')
@@ -82,4 +66,4 @@ def no_sucess():
     return render_template('adios.html')
 
 if __name__ == '__main__':
-    app.run(port=4000,debug=True)
+    app.run(port=3000,debug=True)
